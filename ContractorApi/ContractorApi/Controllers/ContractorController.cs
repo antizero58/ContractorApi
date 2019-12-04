@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using ContractorApi.Models;
+using LiteDB;
 
 namespace ContractorApi.Controllers
 {
@@ -14,16 +15,33 @@ namespace ContractorApi.Controllers
     {
         private readonly ILogger<ContractorController> _logger;
 
-        static private readonly List<Contractor> _contractors = new List<Contractor>();
+        //static private readonly List<Contractor> _contractors = new List<Contractor>();
 
         static ContractorController()
         {
-            _contractors = Enumerable.Range(1, 5).Select(index => new Contractor
-            {
-                Id = index,
-                Name = "Name_" + index
-            })
-            .ToList<Contractor>();
+            // Open database (or create if doesn't exist)
+            //using (var db = new LiteDatabase(@"MyData.db"))
+            //{
+            //    // Get customer collection
+            //    var col = db.GetCollection<Contractor>("contractors");
+
+            //    //var maxId = col.Find(r => r.Id > 0).OrderByDescending(r => r.Id).First().Id;
+
+            //    // Create your new customer instance
+            //    var customer = new Contractor
+            //    {
+            //        Id = 3,
+            //        Inn = "123890",
+            //        Kpp = "12345",
+            //        Name = "Coantractor_3"
+            //    };
+
+            //    // Create unique index in Name field
+            //    col.EnsureIndex(x => x.Id, true);
+
+            //    // Insert new customer document (Id will be auto-incremented)
+            //    col.Insert(customer);
+            //}
         }
 
         public ContractorController(ILogger<ContractorController> logger)
@@ -34,16 +52,21 @@ namespace ContractorApi.Controllers
         [HttpGet]
         public IEnumerable<Contractor> Get()
         {
-            return _contractors;
+            using (var db = new LiteDatabase("MyData.db"))
+            {
+                var contractors = db.GetCollection<Contractor>("contractors");
+                return contractors.Find(r => r.Id > 0);
+            }
         }
 
         [HttpGet("{id}")]
         public Contractor Get(int id)
         {
-            if (_contractors.Exists(r => r.Id == id))
-                return null;
-
-            return _contractors.FirstOrDefault(r => r.Id == id);
+            using (var db = new LiteDatabase("MyData.db"))
+            {
+                var contractors = db.GetCollection<Contractor>("contractors");
+                return contractors.FindOne(r => r.Id >id);
+            }
         }
 
         [HttpPost]
@@ -65,7 +88,12 @@ namespace ContractorApi.Controllers
 
             contractor.FullName = response.Suggestions[0].Data.Name.FullWithOpf;
 
-            _contractors.Add(contractor);
+            using (var db = new LiteDatabase("MyData.db"))
+            {
+                var contractors = db.GetCollection<Contractor>("contractors");
+                contractors.Insert(contractor);
+            }
+
             return CreatedAtAction(nameof(Create), new { id = contractor.Id }, contractor);
         }
     }
