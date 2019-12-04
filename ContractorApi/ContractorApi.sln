@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29519.87
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ContractorApi", "ContractorApi\ContractorApi.csproj", "{462CC9C9-BB30-4833-AE50-DDAF6D15976D}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{462CC9C9-BB30-4833-AE50-DDAF6D15976D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{462CC9C9-BB30-4833-AE50-DDAF6D15976D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{462CC9C9-BB30-4833-AE50-DDAF6D15976D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{462CC9C9-BB30-4833-AE50-DDAF6D15976D}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {539B2D07-B692-4F8D-9F7F-8261B9EFEC17}
+	EndGlobalSection
+EndGlobal
