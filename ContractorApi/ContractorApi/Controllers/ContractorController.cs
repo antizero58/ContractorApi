@@ -47,13 +47,26 @@ namespace ContractorApi.Controllers
         }
 
         [HttpPost]
-        public ActionResult Create(Contractor item)
+        public ActionResult Create(Contractor contractor)
         {
-            if (item == null)
+            if (contractor == null)
                 return BadRequest();
 
-            _contractors.Add(item);
-            return CreatedAtAction(nameof(Create), new { id = item.Id }, item);
+            if (contractor.Name.IsNullOrEmpty() || contractor.Type == 0 || contractor.Inn.IsNullOrEmpty())
+                return BadRequest();
+
+            DadataClient dadataClient = new DadataClient();
+
+           // при создании контрагента проверять его наличие в ЕГРЮЛ по полям inn kpp для Юр.лица и по inn для ИП, через сервис dadata.ru(https://dadata.ru/api/find-party/),
+           // если организация с указанными inn kpp или ИП с указанным inn не существует, выдавать ошибку
+           DadataClient.DadataResponse response = dadataClient.GetSuggestions(contractor.Inn, contractor.Kpp, contractor.Type);
+            if (response == null)
+                return BadRequest();
+
+            contractor.FullName = response.Suggestions[0].Data.Name.FullWithOpf;
+
+            _contractors.Add(contractor);
+            return CreatedAtAction(nameof(Create), new { id = contractor.Id }, contractor);
         }
     }
 }

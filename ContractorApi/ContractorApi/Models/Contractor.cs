@@ -8,10 +8,10 @@ namespace ContractorApi.Models
     public enum ContractorType
     {
         // Юр. лицо
-        LegalEntity,
+        Legal= 1,
 
         // ИП
-        SoleProprietor
+        Individual
     }
 
     public class Contractor
@@ -20,7 +20,7 @@ namespace ContractorApi.Models
         public string Name { get; set; }
         public string FullName { get; set; }
         public ContractorType Type { get; set; }
-        public string inn { get; set; }
-        public string kpp { get; set; }
+        public string Inn { get; set; }
+        public string Kpp { get; set; }
     }
 }
