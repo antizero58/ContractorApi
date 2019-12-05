@@ -13,48 +13,18 @@ namespace ContractorApi.Controllers
     [Route("[controller]")]
     public class ContractorController : ControllerBase
     {
-        private readonly ILogger<ContractorController> _logger;
+        private const string _liteDbName = "MyData.db";
+        private const string _collectionName = "contractors";
 
-        //static private readonly List<Contractor> _contractors = new List<Contractor>();
-
-        static ContractorController()
-        {
-            // Open database (or create if doesn't exist)
-            //using (var db = new LiteDatabase(@"MyData.db"))
-            //{
-            //    // Get customer collection
-            //    var col = db.GetCollection<Contractor>("contractors");
-
-            //    //var maxId = col.Find(r => r.Id > 0).OrderByDescending(r => r.Id).First().Id;
-
-            //    // Create your new customer instance
-            //    var customer = new Contractor
-            //    {
-            //        Id = 3,
-            //        Inn = "123890",
-            //        Kpp = "12345",
-            //        Name = "Coantractor_3"
-            //    };
-
-            //    // Create unique index in Name field
-            //    col.EnsureIndex(x => x.Id, true);
-
-            //    // Insert new customer document (Id will be auto-incremented)
-            //    col.Insert(customer);
-            //}
-        }
-
-        public ContractorController(ILogger<ContractorController> logger)
-        {
-            _logger = logger;
-        }
+        public ContractorController()
+        {}
 
         [HttpGet]
         public IEnumerable<Contractor> Get()
         {
-            using (var db = new LiteDatabase("MyData.db"))
+            using (var db = new LiteDatabase(_liteDbName))
             {
-                var contractors = db.GetCollection<Contractor>("contractors");
+                var contractors = db.GetCollection<Contractor>(_collectionName);
                 return contractors.Find(r => r.Id > 0);
             }
         }
@@ -62,10 +32,10 @@ namespace ContractorApi.Controllers
         [HttpGet("{id}")]
         public Contractor Get(int id)
         {
-            using (var db = new LiteDatabase("MyData.db"))
+            using (var db = new LiteDatabase(_liteDbName))
             {
-                var contractors = db.GetCollection<Contractor>("contractors");
-                return contractors.FindOne(r => r.Id >id);
+                var contractors = db.GetCollection<Contractor>(_collectionName);
+                return contractors.FindOne(r => r.Id == id);
             }
         }
 
@@ -75,26 +45,57 @@ namespace ContractorApi.Controllers
             if (contractor == null)
                 return BadRequest();
 
-            if (contractor.Name.IsNullOrEmpty() || contractor.Type == 0 || contractor.Inn.IsNullOrEmpty())
+            // name, type, inn не могут быть пустыми
+            if (contractor.Name.IsNullOrEmpty() || !contractor.Type.InList(ContractorType.Legal, ContractorType.Individual) || contractor.Inn.IsNullOrEmpty())
                 return BadRequest();
 
-            DadataClient dadataClient = new DadataClient();
+            // kpp не может быть пусто у Юр.лица
+            if (contractor.Type == ContractorType.Legal && contractor.Kpp.IsNullOrEmpty())
+                return BadRequest();
 
-           // при создании контрагента проверять его наличие в ЕГРЮЛ по полям inn kpp для Юр.лица и по inn для ИП, через сервис dadata.ru(https://dadata.ru/api/find-party/),
-           // если организация с указанными inn kpp или ИП с указанным inn не существует, выдавать ошибку
-           DadataClient.DadataResponse response = dadataClient.GetSuggestions(contractor.Inn, contractor.Kpp, contractor.Type);
+            // Проверка на существование элемента
+            using (var db = new LiteDatabase(_liteDbName))
+            {
+                var contractors = db.GetCollection<Contractor>("contractors");
+                if (contractors.Exists(r => r.Id == contractor.Id))
+                    return BadRequest();
+            }
+
+
+            // При создании контрагента проверять его наличие в ЕГРЮЛ по полям inn kpp для Юр.лица и по inn для ИП, через сервис dadata.ru(https://dadata.ru/api/find-party/),
+            // если организация с указанными inn kpp или ИП с указанным inn не существует, выдавать ошибку
+            DadataClient dadataClient = new DadataClient();
+            DadataResponse response = dadataClient.GetSuggestions(contractor.Inn, contractor.Kpp, contractor.Type);
             if (response == null)
                 return BadRequest();
 
+            // Ответов может быть несколько, берём первый
             contractor.FullName = response.Suggestions[0].Data.Name.FullWithOpf;
 
-            using (var db = new LiteDatabase("MyData.db"))
+            using (var db = new LiteDatabase(_liteDbName))
             {
-                var contractors = db.GetCollection<Contractor>("contractors");
+                var contractors = db.GetCollection<Contractor>(_collectionName);
                 contractors.Insert(contractor);
             }
 
             return CreatedAtAction(nameof(Create), new { id = contractor.Id }, contractor);
+        }
+
+        [HttpDelete("{id}")]
+        public ActionResult Delete(int id)
+        {
+            using (var db = new LiteDatabase(_liteDbName))
+            {
+                var contractors = db.GetCollection<Contractor>(_collectionName);
+                var contractor = contractors.FindOne(r => r.Id == id);
+
+                if (contractor == null)
+                    return NotFound();
+
+                contractors.Delete(contractor.Id);
+            }
+
+            return new NoContentResult();
         }
     }
 }
