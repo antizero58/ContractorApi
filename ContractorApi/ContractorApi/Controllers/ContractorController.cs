@@ -10,32 +10,92 @@ using LiteDB;
 namespace ContractorApi.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/contractors")]
     public class ContractorController : ControllerBase
     {
         private const string _liteDbName = "MyData.db";
         private const string _collectionName = "contractors";
 
-        public ContractorController()
-        {}
+        private void InitializeDb()
+        {
+            // Open database (or create if doesn't exist)
+            using (var db = new LiteDatabase(_liteDbName))
+            {
+                // Предварительное заполнение БД
+                var col = db.GetCollection<Contractor>(_collectionName);
+
+                if (col.Count() == 0)
+                {
+                    List<Contractor> contractors = new List<Contractor>
+                    {
+                        new Contractor
+                        {
+                            Id = 1,
+                            Inn = "123890",
+                            Kpp = "12345",
+                            Name = "Coantractor_1",
+                            Type = ContractorType.Legal
+                        },
+
+                        new Contractor
+                        {
+                            Id = 2,
+                            Inn = "7707083893",
+                            Kpp = "12345",
+                            Name = "Сбербанк",
+                            Type = ContractorType.Legal
+                        },
+
+                        new Contractor
+                        {
+                            Id = 3,
+                            Inn = "7702070139",
+                            Kpp = "12345",
+                            Name = "ВТБ",
+                            Type = ContractorType.Legal
+                        },
+
+                        new Contractor
+                        {
+                            Id = 4,
+                            Inn = "132808730606",
+                            Kpp = "12345",
+                            Name = "ИП",
+                            Type = ContractorType.Individual
+                        }
+                    };
+
+                    // Create unique index in Name field
+                    col.EnsureIndex(x => x.Id, true);
+
+                    foreach (var contractor in contractors)
+                        Create(contractor);
+                }
+            }
+        }
 
         [HttpGet]
-        public IEnumerable<Contractor> Get()
+        public ActionResult<IEnumerable<Contractor>> Get()
         {
             using (var db = new LiteDatabase(_liteDbName))
             {
                 var contractors = db.GetCollection<Contractor>(_collectionName);
-                return contractors.Find(r => r.Id > 0);
+                return contractors.Find(r => true).ToList();
             }
         }
 
         [HttpGet("{id}")]
-        public Contractor Get(int id)
+        public ActionResult<Contractor> Get(int id)
         {
             using (var db = new LiteDatabase(_liteDbName))
             {
                 var contractors = db.GetCollection<Contractor>(_collectionName);
-                return contractors.FindOne(r => r.Id == id);
+                var contractor = contractors.FindOne(r => r.Id == id);
+
+                if (contractor == null)
+                    return NotFound();
+
+                return contractor;
             }
         }
 
@@ -56,11 +116,10 @@ namespace ContractorApi.Controllers
             // Проверка на существование элемента
             using (var db = new LiteDatabase(_liteDbName))
             {
-                var contractors = db.GetCollection<Contractor>("contractors");
+                var contractors = db.GetCollection<Contractor>(_collectionName);
                 if (contractors.Exists(r => r.Id == contractor.Id))
                     return BadRequest();
             }
-
 
             // При создании контрагента проверять его наличие в ЕГРЮЛ по полям inn kpp для Юр.лица и по inn для ИП, через сервис dadata.ru(https://dadata.ru/api/find-party/),
             // если организация с указанными inn kpp или ИП с указанным inn не существует, выдавать ошибку

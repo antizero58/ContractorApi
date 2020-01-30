@@ -74,11 +74,11 @@ namespace ContractorApi
             }
             catch (WebException ex)
             {
-                int b = 0;
+                // TODO
             }
             catch (Exception ex)
             {
-                int b = 0;
+                // TODO
             }
             finally
             {
