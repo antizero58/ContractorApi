@@ -107,18 +107,18 @@ namespace ContractorApi.Controllers
 
             // name, type, inn не могут быть пустыми
             if (contractor.Name.IsNullOrEmpty() || !contractor.Type.InList(ContractorType.Legal, ContractorType.Individual) || contractor.Inn.IsNullOrEmpty())
-                return BadRequest();
+                return BadRequest("Поля name, type, inn не могут быть пустыми");
 
             // kpp не может быть пусто у Юр.лица
             if (contractor.Type == ContractorType.Legal && contractor.Kpp.IsNullOrEmpty())
-                return BadRequest();
+                return BadRequest("kpp не может быть пусто у Юр.лица");
 
             // Проверка на существование элемента
             using (var db = new LiteDatabase(_liteDbName))
             {
                 var contractors = db.GetCollection<Contractor>(_collectionName);
                 if (contractors.Exists(r => r.Id == contractor.Id))
-                    return BadRequest();
+                    return BadRequest($"Id {contractor.Id} has already exists.");
             }
 
             // При создании контрагента проверять его наличие в ЕГРЮЛ по полям inn kpp для Юр.лица и по inn для ИП, через сервис dadata.ru(https://dadata.ru/api/find-party/),
@@ -138,6 +138,25 @@ namespace ContractorApi.Controllers
             }
 
             return CreatedAtAction(nameof(Create), new { id = contractor.Id }, contractor);
+        }
+
+        [HttpPut]
+        public ActionResult Update(Contractor contractor)
+        {
+            if (contractor == null)
+                return BadRequest("Contractor is null");
+
+            // Проверка на существование элемента
+            using (var db = new LiteDatabase(_liteDbName))
+            {
+                var contractors = db.GetCollection<Contractor>(_collectionName);
+                if (!contractors.Exists(r => r.Id == contractor.Id))
+                    return NotFound();
+
+                contractors.Update(contractor);
+            }
+
+            return Ok();
         }
 
         [HttpDelete("{id}")]

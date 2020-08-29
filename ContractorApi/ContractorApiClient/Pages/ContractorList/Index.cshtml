@@ -1,0 +1,88 @@
+﻿@page
+@model ContractorApiClient.IndexModel
+
+
+<br />
+<div class="container row p-0 m-0">
+    <div class="col-8">
+        <h2 class="text-info">Contractor List</h2>
+    </div>
+    <div class="col-4">
+        <a asp-page="Create" class="btn btn-info form-control text-white">Create new contractor</a>
+    </div>
+
+    <div class="col-12 border p-3 mt-3">
+        <form method="post">
+            @if (Model.Contractors.Count() > 0)
+            {
+                <table class="table table-striped border p-3 mt-3">
+                    <tr class="table-secondary">
+                        <th>
+                            <label asp-for="Contractors.FirstOrDefault().Id"></label>
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(m => m.Contractors.FirstOrDefault().Name)
+                            <!--<label asp-for="ConractorEntitys.FirstOrDefault().Author"></label>-->
+                        </th>
+                        <th>
+                            <label asp-for="Contractors.FirstOrDefault().FullName"></label>
+                        </th>
+                        <th>
+                            <label asp-for="Contractors.FirstOrDefault().Type"></label>
+                        </th>
+                        <th>
+                            <label asp-for="Contractors.FirstOrDefault().Inn"></label>
+                        </th>
+                        <th>
+                            <label asp-for="Contractors.FirstOrDefault().Kpp"></label>
+                        </th>
+                        <th>
+
+                        </th>
+                    </tr>
+                    @foreach (var item in Model.Contractors)
+                    {
+                        <tr>
+                            <td>
+                                @Html.DisplayFor(m => item.Id)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(m => item.Name)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(m => item.FullName)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(m => item.Type)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(m => item.Inn)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(m => item.Kpp)
+                            </td>
+                            <td>
+                                <div class="text-center">
+                                    <a asp-page="Edit" asp-route-id="@item.Id" class='btn btn-success text-white' style='cursor:pointer; width:70px; margin-bottom:5px'>
+                                        Edit
+                                    </a>
+                                    <button asp-page-handler="Delete" asp-route-id="@item.Id" onclick="return confirm('Are you sure you want to delete?')"
+                                        class='btn btn-danger text-white' style='cursor:pointer; width:70px;'>
+                                       Delete
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </table>
+            }
+            else
+            {
+                <p>No contractors available.</p>
+            }
+        </form>
+    </div>
+</div>
+
+
+

@@ -1,0 +1,73 @@
+﻿@page
+@model ContractorApiClient.CreateModel
+
+
+<br />
+<h2 class="text-info">Create New Conractor</h2>
+<br />
+
+<div class="border container" style="padding:30px;">
+    <form method="post">
+        <div class="text-danger" asp-validation-summary="ModelOnly"></div>
+        <div class="form-group row">
+            <div class="col-3">
+                <label asp-for="ConractorEntity.Name"></label>
+            </div>
+            <div class="col-6">
+                <input asp-for="ConractorEntity.Name" class="form-control" />
+            </div>
+            <span asp-validation-for="ConractorEntity.Name" class="text-danger"></span>
+        </div>
+        <div class="form-group row">
+            <div class="col-3">
+                <label asp-for="ConractorEntity.FullName"></label>
+            </div>
+            <div class="col-6">
+                <input asp-for="ConractorEntity.FullName" class="form-control" />
+            </div>
+            <span asp-validation-for="ConractorEntity.FullName" class="text-danger"></span>
+        </div>
+        <div class="form-group row">
+            <div class="col-3">
+                <label asp-for="ConractorEntity.Type"></label>
+            </div>
+            <div class="col-6">
+                <select asp-for="ConractorEntity.Type" class="form-control"
+                        asp-items="@Model.ContractorTypeSL">
+                    <option value="">-- Select Type --</option>
+                </select>
+            </div>
+            <span asp-validation-for="ConractorEntity.Type" class="text-danger"></span>
+        </div>
+        <div class="form-group row">
+            <div class="col-3">
+                <label asp-for="ConractorEntity.Inn"></label>
+            </div>
+            <div class="col-6">
+                <input asp-for="ConractorEntity.Inn" class="form-control" />
+            </div>
+            <span asp-validation-for="ConractorEntity.Inn" class="text-danger"></span>
+        </div>
+        <div class="form-group row">
+            <div class="col-3">
+                <label asp-for="ConractorEntity.Kpp"></label>
+            </div>
+            <div class="col-6">
+                <input asp-for="ConractorEntity.Kpp" class="form-control" />
+            </div>
+            <span asp-validation-for="ConractorEntity.Kpp" class="text-danger"></span>
+        </div>
+        <div class="form-group row">
+            <div class="col-3 offset-3">
+                <input type="submit" value="Create" class="btn btn-primary form-control" />
+            </div>
+            <div class="col-3">
+                <a asp-page="Index" class="btn btn-success form-control">Back to List</a>
+            </div>
+        </div>
+    </form>
+</div>
+
+@section Scripts{ 
+    <partial name="_ValidationScriptsPartial" />
+}
