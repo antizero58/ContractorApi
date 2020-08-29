@@ -16,7 +16,7 @@ namespace ContractorApi.Models
     [DataContract]
     public class Contractor
     {
-        [DataMember(Name = "id")]
+        //[DataMember(Name = "id")]
         public int Id { get; set; }
 
         [DataMember(Name = "name")]

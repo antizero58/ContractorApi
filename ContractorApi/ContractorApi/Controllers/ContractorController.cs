@@ -13,7 +13,7 @@ namespace ContractorApi.Controllers
     [Route("api/contractors")]
     public class ContractorController : ControllerBase
     {
-        private const string _liteDbName = "MyData.db";
+        private const string _liteDbName = @"MyData.db";
         private const string _collectionName = "contractors";
 
         private void InitializeDb()
