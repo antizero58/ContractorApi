@@ -22,6 +22,7 @@ namespace ContractorApi
         public void ConfigureServices(IServiceCollection services)
         {
             services.Configure<LiteDbOptions>(Configuration.GetSection("LiteDbOptions"));
+            services.Configure<DadataOptions>(Configuration.GetSection("DadataOptions"));
             services.AddSingleton<ILiteDbContext, LitetContractorDbContext>();
             services.AddSingleton<IDadataClient, DadataClient>();
             services.AddTransient<ILiteDbContractorService, LiteDbContractorService>();

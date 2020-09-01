@@ -7,7 +7,6 @@ namespace ContractorApi.LiteDb
 {
     public class LiteDbContractorService : ILiteDbContractorService
     {
-
         private LiteDatabase _liteDb;
         private const string _collectionName = "contractors";
 

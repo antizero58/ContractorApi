@@ -4,16 +4,20 @@ using ContractorApi.Models;
 using System.IO;
 using System.Text;
 using Newtonsoft.Json;
+using Microsoft.Extensions.Options;
 
 namespace ContractorApi.WebServices.Dadata
 {
     public class DadataClient : IDadataClient
     {
-        private const string _dadataUrl = "https://suggestions.dadata.ru/suggestions/api/4_1/rs/suggest/party";
-        private const string _apiKey = "0d5a072ea1b0378bd05b7dedcb59dfc526ba54fa";
+        private readonly string _dadataUrl;
+        private readonly string _apiKey;
 
-        public DadataClient()
-        {}
+        public DadataClient(IOptions<DadataOptions> options)
+        {
+            _dadataUrl = options.Value.Url;
+            _apiKey = options.Value.ApiKey;
+        }
 
         public DadataResponse GetSuggestions(string inn, string kpp, ContractorType type)
         {
