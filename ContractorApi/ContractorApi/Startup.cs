@@ -1,3 +1,4 @@
+using ContractorApi.LiteDb;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -19,6 +20,10 @@ namespace ContractorApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.Configure<LiteDbOptions>(Configuration.GetSection("LiteDbOptions"));
+            services.AddSingleton<ILiteDbContext, LitetContractorDbContext>();
+            services.AddTransient<ILiteDbContractorService, LiteDbContractorService>();
+
             services.AddControllers();
 
             // Register the Swagger generator, defining 1 or more Swagger documents
