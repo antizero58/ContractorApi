@@ -1,4 +1,5 @@
 using ContractorApi.LiteDb;
+using ContractorApi.WebServices.Dadata;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -22,6 +23,7 @@ namespace ContractorApi
         {
             services.Configure<LiteDbOptions>(Configuration.GetSection("LiteDbOptions"));
             services.AddSingleton<ILiteDbContext, LitetContractorDbContext>();
+            services.AddSingleton<IDadataClient, DadataClient>();
             services.AddTransient<ILiteDbContractorService, LiteDbContractorService>();
 
             services.AddControllers();

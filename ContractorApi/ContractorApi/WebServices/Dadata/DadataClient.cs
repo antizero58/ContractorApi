@@ -1,17 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using System.Net;
 using ContractorApi.Models;
-using System.Text.Json;
 using System.IO;
 using System.Text;
 using Newtonsoft.Json;
 
-namespace ContractorApi
+namespace ContractorApi.WebServices.Dadata
 {
-    public class DadataClient
+    public class DadataClient : IDadataClient
     {
         private const string _dadataUrl = "https://suggestions.dadata.ru/suggestions/api/4_1/rs/suggest/party";
         private const string _apiKey = "0d5a072ea1b0378bd05b7dedcb59dfc526ba54fa";

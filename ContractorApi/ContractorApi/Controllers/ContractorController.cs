@@ -6,6 +6,7 @@ using Microsoft.Extensions.Logging;
 using ContractorApi.Models;
 using LiteDB;
 using ContractorApi.LiteDb;
+using ContractorApi.WebServices.Dadata;
 
 namespace ContractorApi.Controllers
 {
@@ -15,17 +16,21 @@ namespace ContractorApi.Controllers
     {
         private readonly ILogger<ContractorController> _logger;
         private readonly ILiteDbContractorService _liteDbContractorService;
+        private readonly IDadataClient _dadataClient;
 
         public ContractorController(ILogger<ContractorController> logger,
-            ILiteDbContractorService liteDbContractorService)
+            ILiteDbContractorService liteDbContractorService,
+            IDadataClient dadataClient)
         {
             _logger = logger;
             _liteDbContractorService = liteDbContractorService;
+            _dadataClient = dadataClient;
     }
 
         [HttpGet]
         public IEnumerable<Contractor> Get()
         {
+            _logger.LogInformation("HttpGet");
             return _liteDbContractorService.FindAll().ToList();
         }
 
@@ -55,8 +60,7 @@ namespace ContractorApi.Controllers
 
             // При создании контрагента проверять его наличие в ЕГРЮЛ по полям inn kpp для Юр.лица и по inn для ИП, через сервис dadata.ru(https://dadata.ru/api/find-party/),
             // если организация с указанными inn kpp или ИП с указанным inn не существует, выдавать ошибку
-            DadataClient dadataClient = new DadataClient();
-            DadataResponse response = dadataClient.GetSuggestions(contractor.Inn, contractor.Kpp, contractor.Type);
+            DadataResponse response = _dadataClient.GetSuggestions(contractor.Inn, contractor.Kpp, contractor.Type);
             if (response == null)
                 return BadRequest();
 
