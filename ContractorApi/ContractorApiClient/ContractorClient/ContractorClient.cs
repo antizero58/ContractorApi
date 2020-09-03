@@ -10,7 +10,7 @@ namespace ContractorApiClient
 {
     public class ContractorClient : IContractorClient
     {
-        private const string _apiUrl = "https://localhost:44330/api/contractors";
+        private const string _apiUrl = "http://192.168.1.36:801/api/contractors";
 
         public ContractorClient()
         {}

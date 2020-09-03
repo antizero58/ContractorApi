@@ -5,7 +5,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
 -->
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
+    <EncryptedPassword>AQAAANCMnd8BFdERjHoAwE/Cl+sBAAAAram9HfjEj0W4ixR5UivapQAAAAACAAAAAAAQZgAAAAEAACAAAAAQNS5UU9Y22/RPcI2YRY6LsfHHl3FR8lL6N+oKESiWUgAAAAAOgAAAAAIAACAAAACr7n3VDNmGo6RR+V32D+Dp2UfiJBEjeivANgoHojANSyAAAAAsQqJDqQXHdlIdvRDeXbvCtLZzSYVH6vw8qmGO9+M0hUAAAADELMydOZuwFoJZSmU4r7KW/iJVsF0taJeD9kMwi5ad7dvRLqasQpNZDKAyXJfx8C6Ecq9h5ke9uj6Gpf17VjHW</EncryptedPassword>
     <TimeStampOfAssociatedLegacyPublishXmlFile />
-    <_PublishTargetUrl>F:\Projects\AvantTest\ContractorApi\ContractorApi\bin\Release\netcoreapp3.1\publish\</_PublishTargetUrl>
   </PropertyGroup>
 </Project>
