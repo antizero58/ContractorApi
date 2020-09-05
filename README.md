@@ -16,8 +16,11 @@ kpp: string
 
 Валидация и логика:
 name, type, inn не могут быть пустыми, kpp не может быть пусто у Юр.лица
+
 при создании контрагента проверяется его наличие в ЕГРЮЛ по полям inn kpp для Юр.лица и по inn для ИП, через сервис dadata.ru (https://dadata.ru/api/find-party/),
+
 если организация с указанными inn kpp или ИП с указанным inn не существует, выдаётся ошибка
+
 при создании из ответа dadata записывать full_with_opf — полное наименование с ОПФ в поле fullname
 
 Добавлен swagger-ui к созданному api. Используется Swashbuckle https://github.com/domaindrivendev/Swashbuckle.AspNetCore в дефолтной конфигурации
