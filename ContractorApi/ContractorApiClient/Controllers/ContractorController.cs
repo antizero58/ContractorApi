@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using ContractorApi.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ContractorApiClient
@@ -8,31 +9,26 @@ namespace ContractorApiClient
     [ApiController]
     public class ContractorController : Controller
     {
-        private readonly ContractorClient cc = new ContractorClient();
+        private readonly IContractorClient _contractorClient;
 
         public IEnumerable<Contractor> Contractors { get; set; }
 
-        public ContractorController()
+        public ContractorController(IContractorClient contractorClient)
         {
-            //Init();
+            _contractorClient = contractorClient;
         }
-
-        //public async void Init()
-        //{
-        //    Contractors = await cc.Get();
-        //}
 
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            Contractors = await cc.Get();
+            Contractors = await _contractorClient.Get();
             return Json(new { data = Contractors });
         }
 
         [HttpDelete]
         public async Task<IActionResult> Delete(int id)
         {
-            return await cc.Delete(id);
+            return await _contractorClient.Delete(id);
         }
     }
 }

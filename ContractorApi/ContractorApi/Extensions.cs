@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace ContractorApi
 {
@@ -9,7 +7,7 @@ namespace ContractorApi
     {
         public static bool IsNullOrEmpty(this string str)
         {
-            return String.IsNullOrEmpty(str);
+            return string.IsNullOrEmpty(str);
         }
 
         public static bool InList<T>(this T source, params T[] list)

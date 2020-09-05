@@ -5,15 +5,19 @@ using System.Net;
 using System.IO;
 using Newtonsoft.Json;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
+using ContractorApi.Models;
 
 namespace ContractorApiClient
 {
     public class ContractorClient : IContractorClient
     {
-        private const string _apiUrl = "http://192.168.1.36:801/api/contractors";
+        private readonly string _apiUrl;
 
-        public ContractorClient()
-        {}
+        public ContractorClient(IOptions<ContractorApiOptions> options)
+        {
+            _apiUrl = options.Value.Url;
+        }
 
         public async Task<IEnumerable<Contractor>> Get()
         {
@@ -109,7 +113,7 @@ namespace ContractorApiClient
                 using (var responseStream = new StreamReader(response.GetResponseStream()))
                 {
                     HttpWebResponse httpResponse = (HttpWebResponse)response;
-                    if (httpResponse.StatusCode == HttpStatusCode.OK)
+                    if (httpResponse.StatusCode == HttpStatusCode.NoContent)
                         return new OkResult();
                     else
                         throw new Exception(@$"Сервис {_apiUrl} вернул статус {httpResponse.StatusCode}");

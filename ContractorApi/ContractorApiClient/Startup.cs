@@ -25,6 +25,7 @@ namespace ContractorApiClient
         {
             services.AddRazorPages().AddRazorRuntimeCompilation();
 
+            services.Configure<ContractorApiOptions>(Configuration.GetSection("ContractorApiOptions"));
             services.AddSingleton<IContractorClient, ContractorClient>();
         }
 
